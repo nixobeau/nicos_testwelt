@@ -1,6 +1,4 @@
-export class GooglePage {
-  onButtonClick?: (buttonNumber: number) => void;
-
+export class GoogleButton8Page {
   render(): HTMLElement {
     const wrapper = document.createElement('div');
     wrapper.style.cssText = `
@@ -15,7 +13,7 @@ export class GooglePage {
 
     const backButton = document.createElement('button');
     backButton.textContent = '← Zurück';
-    backButton.id = 'google-btn-back';
+    backButton.id = 'google-btn-8-back';
     backButton.style.cssText = `
       position: absolute;
       top: 20px;
@@ -33,7 +31,7 @@ export class GooglePage {
     `;
 
     const title = document.createElement('h1');
-    title.textContent = 'Google';
+    title.textContent = 'Button 8';
     title.style.cssText = `
       color: white;
       font-size: 4rem;
@@ -41,24 +39,8 @@ export class GooglePage {
       text-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
     `;
 
-    const container = document.createElement('div');
-    container.className = 'button-container';
-
-    for (let i = 1; i <= 8; i++) {
-      const button = document.createElement('button');
-      button.textContent = i === 1 ? 'Tabelle' : 'nicht zugewiesen';
-      button.id = `google-btn-${i}`;
-      button.addEventListener('click', () => {
-        if (this.onButtonClick) {
-          this.onButtonClick(i);
-        }
-      });
-      container.appendChild(button);
-    }
-
     wrapper.appendChild(backButton);
     wrapper.appendChild(title);
-    wrapper.appendChild(container);
 
     return wrapper;
   }

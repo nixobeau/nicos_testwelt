@@ -1,8 +1,17 @@
 import { GooglePage } from './pages/Google';
+import { GoogleButton1Page } from './pages/google/GoogleButton1';
+import { GoogleButton2Page } from './pages/google/GoogleButton2';
+import { GoogleButton3Page } from './pages/google/GoogleButton3';
+import { GoogleButton4Page } from './pages/google/GoogleButton4';
+import { GoogleButton5Page } from './pages/google/GoogleButton5';
+import { GoogleButton6Page } from './pages/google/GoogleButton6';
+import { GoogleButton7Page } from './pages/google/GoogleButton7';
+import { GoogleButton8Page } from './pages/google/GoogleButton8';
 
 class App {
   private appElement: HTMLElement;
-  private currentPage: 'home' | 'google' = 'home';
+  private currentPage: 'home' | 'google' | 'google-button' = 'home';
+  private currentButtonPage?: number;
 
   constructor() {
     const app = document.getElementById('app');
@@ -67,6 +76,7 @@ class App {
     this.currentPage = 'google';
 
     const googlePage = new GooglePage();
+    googlePage.onButtonClick = (buttonNumber: number) => this.goToGoogleButton(buttonNumber);
     const pageElement = googlePage.render();
     this.appElement.appendChild(pageElement);
 
@@ -79,6 +89,34 @@ class App {
 
   private goToGoogle(): void {
     this.renderGoogle();
+  }
+
+  private goToGoogleButton(buttonNumber: number): void {
+    this.appElement.innerHTML = '';
+    this.currentPage = 'google-button';
+    this.currentButtonPage = buttonNumber;
+
+    const pageClasses = [
+      GoogleButton1Page,
+      GoogleButton2Page,
+      GoogleButton3Page,
+      GoogleButton4Page,
+      GoogleButton5Page,
+      GoogleButton6Page,
+      GoogleButton7Page,
+      GoogleButton8Page,
+    ];
+
+    const PageClass = pageClasses[buttonNumber - 1];
+    const page = new PageClass();
+    const pageElement = page.render();
+    this.appElement.appendChild(pageElement);
+
+    // Back button listener
+    const backButton = document.getElementById(`google-btn-${buttonNumber}-back`);
+    if (backButton) {
+      backButton.addEventListener('click', () => this.renderGoogle());
+    }
   }
 }
 
