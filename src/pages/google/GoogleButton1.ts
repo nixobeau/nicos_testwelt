@@ -1,5 +1,5 @@
 export class GoogleButton1Page {
-  private apiUrl = 'https://script.google.com/macros/s/AKfycbyX9CFsJr0HkN48Qvtc9SEgaDXbGT1usjcAs4O-XfOEGwBlmnbgub8pR0sseAPQnxvG/exec';
+  private apiUrl = 'https://script.google.com/macros/s/AKfycbw78LOkpMqxwwA6JOXEF3bfthU_g3mmmXAGL06BC_fv92jCWM4fanqAz3XkM0IfMs6O/exec';
 
   render(): HTMLElement {
     const wrapper = document.createElement('div');
@@ -62,11 +62,12 @@ export class GoogleButton1Page {
     fetch(this.apiUrl)
       .then(response => response.json())
       .then(data => {
+        console.log('API Response:', data);
         this.renderTable(container, data);
       })
       .catch(error => {
         console.error('Error loading data:', error);
-        container.innerHTML = '<p style="color: white;">Fehler beim Laden der Daten</p>';
+        container.innerHTML = '<p style="color: #ff4444; padding: 20px; text-align: center;">Fehler beim Laden der Daten<br><br>Check Console für Details</p>';
       });
   }
 
