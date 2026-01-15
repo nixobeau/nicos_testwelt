@@ -19,7 +19,7 @@ class App {
 
     for (let i = 1; i <= 8; i++) {
       const button = document.createElement('button');
-      button.textContent = `Button ${i}`;
+      button.textContent = 'nicht zugewiesen';
       button.id = `btn-${i}`;
       container.appendChild(button);
     }
