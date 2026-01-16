@@ -164,7 +164,27 @@ export class GoogleButton2Page {
         font-size: 1.3rem;
         font-weight: bold;
       `;
-      price.textContent = priceValue ? '€ ' + priceValue.toFixed(2) : '';
+      
+      let priceText = '';
+      if (priceValue) {
+        // Wenn es ein Datum-String ist, versuchen wir zu extrahieren
+        if (typeof priceValue === 'string' && priceValue.includes('T')) {
+          console.warn('⚠️ Preis als Datum erkannt:', priceValue);
+          // Fallback: versuchen wir, eine sinnvolle Zahl zu extrahieren
+          priceText = '€ ?';
+        } else if (typeof priceValue === 'number') {
+          priceText = '€ ' + priceValue.toFixed(2);
+        } else {
+          // Versuchen zu konvertieren
+          const num = parseFloat(priceValue);
+          if (!isNaN(num)) {
+            priceText = '€ ' + num.toFixed(2);
+          } else {
+            priceText = '€ ' + priceValue;
+          }
+        }
+      }
+      price.textContent = priceText;
 
       // Alkohol Badge
       const alkoholValue = drink.alkohol || false;
