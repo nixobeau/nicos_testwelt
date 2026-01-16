@@ -1,6 +1,14 @@
 export class GoogleButton2Page {
   private apiUrl = 'https://script.google.com/macros/s/AKfycbwheUq2MKRwMz7BY5uR3oKUKFqPthi_zAQfXBtvjL1NRFT79gEMKbHSyPAtQCaCBaEY/exec?sheet=Tabellenblatt1';
 
+  private getResponsiveTitle(): string {
+    return window.innerWidth < 480 ? '2rem' : window.innerWidth < 768 ? '2rem' : '4rem';
+  }
+
+  private getResponsiveCardMinWidth(): string {
+    return window.innerWidth < 480 ? '100%' : window.innerWidth < 768 ? '250px' : '300px';
+  }
+
   render(): HTMLElement {
     const wrapper = document.createElement('div');
     wrapper.style.cssText = `
@@ -9,7 +17,7 @@ export class GoogleButton2Page {
       align-items: center;
       justify-content: center;
       min-height: 100vh;
-      padding: 20px;
+      padding: ${window.innerWidth < 480 ? '10px' : window.innerWidth < 768 ? '15px' : '20px'};
       position: relative;
     `;
 
@@ -21,7 +29,7 @@ export class GoogleButton2Page {
       top: 20px;
       left: 20px;
       padding: 0.75rem 1.5rem;
-      font-size: 1rem;
+      font-size: ${window.innerWidth < 480 ? '0.85rem' : '1rem'};
       background-color: rgba(255, 255, 255, 0.2);
       color: white;
       border: 2px solid white;
@@ -36,8 +44,8 @@ export class GoogleButton2Page {
     title.textContent = 'Getränkekarte';
     title.style.cssText = `
       color: white;
-      font-size: 4rem;
-      margin-bottom: 3rem;
+      font-size: ${this.getResponsiveTitle()};
+      margin-bottom: ${window.innerWidth < 480 ? '1.5rem' : window.innerWidth < 768 ? '1.5rem' : '3rem'};
       text-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
     `;
 
@@ -45,10 +53,11 @@ export class GoogleButton2Page {
     cardsContainer.id = 'cards-container';
     cardsContainer.style.cssText = `
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-      gap: 2rem;
+      grid-template-columns: repeat(auto-fit, minmax(${this.getResponsiveCardMinWidth()}, 1fr));
+      gap: ${window.innerWidth < 480 ? '1rem' : window.innerWidth < 768 ? '1.5rem' : '2rem'};
       max-width: 1200px;
       width: 100%;
+      padding: ${window.innerWidth < 480 ? '0 5px' : '0'};
     `;
 
     wrapper.appendChild(backButton);
@@ -107,7 +116,7 @@ export class GoogleButton2Page {
         backdrop-filter: blur(10px);
         border: 2px solid white;
         border-radius: 12px;
-        padding: 1.5rem;
+        padding: ${window.innerWidth < 480 ? '1rem' : '1.5rem'};
         display: flex;
         flex-direction: column;
         gap: 1rem;
@@ -131,7 +140,7 @@ export class GoogleButton2Page {
       name.textContent = nameValue;
       name.style.cssText = `
         color: white;
-        font-size: 1.5rem;
+        font-size: ${window.innerWidth < 480 ? '1.2rem' : '1.5rem'};
         margin: 0;
       `;
 
@@ -141,7 +150,7 @@ export class GoogleButton2Page {
       description.textContent = descValue;
       description.style.cssText = `
         color: #ccc;
-        font-size: 0.95rem;
+        font-size: ${window.innerWidth < 480 ? '0.85rem' : '0.95rem'};
         margin: 0;
         flex-grow: 1;
       `;
@@ -161,7 +170,7 @@ export class GoogleButton2Page {
       const price = document.createElement('div');
       price.style.cssText = `
         color: #4ade80;
-        font-size: 1.3rem;
+        font-size: ${window.innerWidth < 480 ? '1rem' : '1.3rem'};
         font-weight: bold;
       `;
       
@@ -197,7 +206,7 @@ export class GoogleButton2Page {
         color: ${isAlcoholic ? '#fca5a5' : '#93c5fd'};
         padding: 0.4rem 0.8rem;
         border-radius: 20px;
-        font-size: 0.85rem;
+        font-size: ${window.innerWidth < 480 ? '0.75rem' : '0.85rem'};
         font-weight: bold;
       `;
 
