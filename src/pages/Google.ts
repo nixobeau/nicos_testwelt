@@ -46,7 +46,13 @@ export class GooglePage {
 
     for (let i = 1; i <= 8; i++) {
       const button = document.createElement('button');
-      button.textContent = i === 1 ? 'Tabelle' : 'nicht zugewiesen';
+      if (i === 1) {
+        button.textContent = 'Tabelle';
+      } else if (i === 2) {
+        button.textContent = 'Tabelle 2';
+      } else {
+        button.textContent = 'nicht zugewiesen';
+      }
       button.id = `google-btn-${i}`;
       button.addEventListener('click', () => {
         if (this.onButtonClick) {
