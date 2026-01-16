@@ -1,5 +1,10 @@
 export class GoogleButton2Page {
-  private apiUrl = 'https://script.google.com/a/macros/beau.camp/s/AKfycbxNZJPS0UIykT8LQ3CFnMioEUqqF2nx5UHIXZnpRXEHKaB2_v-gF_Sh5E170GvxkPaNcg/exec?sheet=getranke';
+  private drinks = [
+    { name: 'Wasser', beschreibung: 'Gerolsteiner', preis: 2.50, alkohol: false },
+    { name: 'Bier', beschreibung: 'Früh-Kölsch', preis: 2.20, alkohol: true },
+    { name: 'Wein', beschreibung: 'Rotwein', preis: 3.00, alkohol: true },
+    { name: 'Saft', beschreibung: 'Orangensaft', preis: 1.80, alkohol: false },
+  ];
 
   render(): HTMLElement {
     const wrapper = document.createElement('div');
@@ -55,34 +60,34 @@ export class GoogleButton2Page {
     wrapper.appendChild(title);
     wrapper.appendChild(cardsContainer);
 
-    // Load data
-    this.loadData(cardsContainer);
+    // Load drinks from localStorage or use default
+    this.loadDrinksFromStorage();
+    this.renderCards(cardsContainer, this.drinks);
 
     return wrapper;
   }
 
-  private loadData(container: HTMLElement): void {
-    console.log('API URL:', this.apiUrl);
-    fetch(this.apiUrl)
-      .then(response => response.json())
-      .then(data => {
-        console.log('Getränkekarte Data:', data);
-        this.renderCards(container, data);
-      })
-      .catch(error => {
-        console.error('Error loading drinks:', error);
-        container.innerHTML = '<p style="color: #ff4444; padding: 20px; text-align: center; grid-column: 1/-1;">Fehler beim Laden der Getränkekarte</p>';
-      });
+  private loadDrinksFromStorage(): void {
+    const stored = localStorage.getItem('getranke_drinks');
+    if (stored) {
+      try {
+        this.drinks = JSON.parse(stored);
+        console.log('Getränke aus localStorage geladen:', this.drinks);
+      } catch (e) {
+        console.warn('Fehler beim Laden aus localStorage, verwende Standard-Getränke', e);
+      }
+    } else {
+      // Speichere Standard-Getränke beim ersten Besuch
+      localStorage.setItem('getranke_drinks', JSON.stringify(this.drinks));
+      console.log('Getränke in localStorage gespeichert');
+    }
   }
 
   private renderCards(container: HTMLElement, data: any[]): void {
     if (!Array.isArray(data) || data.length === 0) {
-      console.warn('No data received or invalid format:', data);
+      container.innerHTML = '<p style="color: #ccc; grid-column: 1/-1;">Keine Getränke vorhanden</p>';
       return;
     }
-
-    console.log('First drink item:', data[0]);
-    console.log('Available fields:', Object.keys(data[0]));
 
     data.forEach((drink: any) => {
       const card = document.createElement('div');
@@ -109,8 +114,8 @@ export class GoogleButton2Page {
         card.style.boxShadow = 'none';
       };
 
-      // Name (try different field names)
-      const nameValue = drink.name || drink.Name || drink.Getränk || drink['name '] || '';
+      // Name
+      const nameValue = drink.name || '';
       const name = document.createElement('h2');
       name.textContent = nameValue;
       name.style.cssText = `
@@ -119,8 +124,8 @@ export class GoogleButton2Page {
         margin: 0;
       `;
 
-      // Beschreibung (try different field names)
-      const descValue = drink.beschreibung || drink.Beschreibung || drink.description || drink['beschreibung '] || '';
+      // Beschreibung
+      const descValue = drink.beschreibung || '';
       const description = document.createElement('p');
       description.textContent = descValue;
       description.style.cssText = `
@@ -140,20 +145,20 @@ export class GoogleButton2Page {
         border-top: 1px solid rgba(255, 255, 255, 0.2);
       `;
 
-      // Preis (try different field names)
-      const priceValue = drink.preis || drink.Preis || drink.price || drink['preis '] || '';
+      // Preis
+      const priceValue = drink.preis || '';
       const price = document.createElement('div');
       price.style.cssText = `
         color: #4ade80;
         font-size: 1.3rem;
         font-weight: bold;
       `;
-      price.textContent = priceValue ? '€ ' + priceValue : '';
+      price.textContent = priceValue ? '€ ' + priceValue.toFixed(2) : '';
 
-      // Alkohol Badge (try different field names)
-      const alkoholValue = drink.alkohol || drink.Alkohol || drink.alcohol || drink['alkohol '] || false;
+      // Alkohol Badge
+      const alkoholValue = drink.alkohol || false;
       const alcoholBadge = document.createElement('div');
-      const isAlcoholic = alkoholValue === true || alkoholValue === 'TRUE' || alkoholValue === 'true' || alkoholValue === 1;
+      const isAlcoholic = alkoholValue === true || alkoholValue === 'TRUE' || alkoholValue === 'true';
       alcoholBadge.textContent = isAlcoholic ? '🍺 Mit Alkohol' : '🥤 Alkoholfrei';
       alcoholBadge.style.cssText = `
         background-color: ${isAlcoholic ? 'rgba(239, 68, 68, 0.3)' : 'rgba(59, 130, 246, 0.3)'};
