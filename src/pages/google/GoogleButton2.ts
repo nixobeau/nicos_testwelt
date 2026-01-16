@@ -75,6 +75,14 @@ export class GoogleButton2Page {
   }
 
   private renderCards(container: HTMLElement, data: any[]): void {
+    if (!Array.isArray(data) || data.length === 0) {
+      console.warn('No data received or invalid format:', data);
+      return;
+    }
+
+    console.log('First drink item:', data[0]);
+    console.log('Available fields:', Object.keys(data[0]));
+
     data.forEach((drink: any) => {
       const card = document.createElement('div');
       card.style.cssText = `
@@ -100,18 +108,20 @@ export class GoogleButton2Page {
         card.style.boxShadow = 'none';
       };
 
-      // Name
+      // Name (try different field names)
+      const nameValue = drink.name || drink.Name || drink.Getränk || '';
       const name = document.createElement('h2');
-      name.textContent = drink.name || '';
+      name.textContent = nameValue;
       name.style.cssText = `
         color: white;
         font-size: 1.5rem;
         margin: 0;
       `;
 
-      // Beschreibung
+      // Beschreibung (try different field names)
+      const descValue = drink.beschreibung || drink.Beschreibung || drink.description || '';
       const description = document.createElement('p');
-      description.textContent = drink.beschreibung || '';
+      description.textContent = descValue;
       description.style.cssText = `
         color: #ccc;
         font-size: 0.95rem;
@@ -129,18 +139,20 @@ export class GoogleButton2Page {
         border-top: 1px solid rgba(255, 255, 255, 0.2);
       `;
 
-      // Preis
+      // Preis (try different field names)
+      const priceValue = drink.preis || drink.Preis || drink.price || '';
       const price = document.createElement('div');
       price.style.cssText = `
         color: #4ade80;
         font-size: 1.3rem;
         font-weight: bold;
       `;
-      price.textContent = drink.preis ? '€ ' + drink.preis : '';
+      price.textContent = priceValue ? '€ ' + priceValue : '';
 
-      // Alkohol Badge
+      // Alkohol Badge (try different field names)
+      const alkoholValue = drink.alkohol || drink.Alkohol || drink.alcohol || false;
       const alcoholBadge = document.createElement('div');
-      const isAlcoholic = drink.alkohol === true || drink.alkohol === 'TRUE' || drink.alkohol === 'true';
+      const isAlcoholic = alkoholValue === true || alkoholValue === 'TRUE' || alkoholValue === 'true' || alkoholValue === 1;
       alcoholBadge.textContent = isAlcoholic ? '🍺 Mit Alkohol' : '🥤 Alkoholfrei';
       alcoholBadge.style.cssText = `
         background-color: ${isAlcoholic ? 'rgba(239, 68, 68, 0.3)' : 'rgba(59, 130, 246, 0.3)'};
