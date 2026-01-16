@@ -89,11 +89,17 @@ export class GoogleButton2Page {
   }
 
   private renderCards(container: HTMLElement, data: any[]): void {
+    console.log('🎨 renderCards aufgerufen mit:', data);
+    console.log('📋 Ist Array?', Array.isArray(data));
+    console.log('📝 Länge:', data ? data.length : 'undefined');
+    
     if (!Array.isArray(data) || data.length === 0) {
+      console.log('❌ Keine Daten zum Rendern');
       container.innerHTML = '<p style="color: #ccc; grid-column: 1/-1;">Keine Getränke vorhanden</p>';
       return;
     }
 
+    console.log('✅ Render', data.length, 'Getränke');
     data.forEach((drink: any) => {
       const card = document.createElement('div');
       card.style.cssText = `
