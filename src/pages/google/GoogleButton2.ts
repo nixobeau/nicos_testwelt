@@ -62,6 +62,7 @@ export class GoogleButton2Page {
   }
 
   private loadData(container: HTMLElement): void {
+    console.log('API URL:', this.apiUrl);
     fetch(this.apiUrl)
       .then(response => response.json())
       .then(data => {
