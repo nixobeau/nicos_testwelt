@@ -1,13 +1,6 @@
 export class GoogleButton2Page {
   private apiUrl = 'https://script.google.com/a/macros/beau.camp/s/AKfycbwDTeI_QX3xz2z_IR4hVeapEA0xm9JXCeksLHIt-vaa333mXJfnciA8eTIz2XXqpdxx/exec?sheet=getranke';
 
-  private drinks = [
-    { name: 'Wasser', beschreibung: 'Gerolsteiner', preis: 2.50, alkohol: false },
-    { name: 'Bier', beschreibung: 'Früh-Kölsch', preis: 2.20, alkohol: true },
-    { name: 'Wein', beschreibung: 'Rotwein', preis: 3.00, alkohol: true },
-    { name: 'Saft', beschreibung: 'Orangensaft', preis: 1.80, alkohol: false },
-  ];
-
   render(): HTMLElement {
     const wrapper = document.createElement('div');
     wrapper.style.cssText = `
@@ -69,18 +62,24 @@ export class GoogleButton2Page {
   }
 
   private loadData(container: HTMLElement): void {
-    console.log('API URL:', this.apiUrl);
+    console.log('🔍 API URL:', this.apiUrl);
     fetch(this.apiUrl)
-      .then(response => response.json())
+      .then(response => {
+        console.log('✅ Response erhalten:', response.status);
+        return response.json();
+      })
       .then(data => {
-        console.log('Getränkekarte Data:', data);
+        console.log('📊 Getränkekarte Data von API:', data);
+        console.log('📝 Anzahl Getränke:', data.length);
+        if (data.length > 0) {
+          console.log('🥤 Erstes Getränk:', data[0]);
+          console.log('🔑 Feldnamen:', Object.keys(data[0]));
+        }
         this.renderCards(container, data);
       })
       .catch(error => {
-        console.error('Error loading drinks:', error);
-        // Fallback zu lokalen Daten bei Fehler
-        console.log('Using fallback data');
-        this.renderCards(container, this.drinks);
+        console.error('❌ Error loading drinks:', error);
+        container.innerHTML = '<p style="color: #ff4444; padding: 20px; text-align: center; grid-column: 1/-1;">Fehler beim Laden der Getränkekarte von Google Sheets</p>';
       });
   }
 
