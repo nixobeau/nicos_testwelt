@@ -69,10 +69,15 @@ export class GoogleButton2Page {
         return response.json();
       })
       .then(data => {
-        console.log('📊 Getränkekarte Data von API:', data);
-        console.log('📝 Anzahl Getränke:', data.length);
-        if (data.length > 0) {
-          console.log('🥤 Erstes Getränk:', data[0]);
+        console.log('📊 Rohe API Daten:', data);
+        if (data.error) {
+          console.log('❌ FEHLER:', data.error);
+          console.log('📋 Verfügbare Sheets:', data.available);
+          console.log('🔍 Angefordert:', data.requested);
+        }
+        console.log('📝 Anzahl Items:', Array.isArray(data) ? data.length : 'nicht array');
+        if (Array.isArray(data) && data.length > 0) {
+          console.log('🥤 Erstes Item:', data[0]);
           console.log('🔑 Feldnamen:', Object.keys(data[0]));
         }
         this.renderCards(container, data);
