@@ -1,5 +1,5 @@
 export class GoogleButton2Page {
-  private apiUrl = 'https://script.google.com/a/macros/beau.camp/s/AKfycbwDTeI_QX3xz2z_IR4hVeapEA0xm9JXCeksLHIt-vaa333mXJfnciA8eTIz2XXqpdxx/exec?sheet=getranke';
+  private apiUrl = 'https://script.google.com/a/macros/beau.camp/s/AKfycbwxmCTfdndyl7iE1fDl2ul-AAU70xKVil0MfQrMGx2bjn0vJuZH_O758JH_1wQ60_jE/exec?sheet=getranke';
 
   render(): HTMLElement {
     const wrapper = document.createElement('div');
