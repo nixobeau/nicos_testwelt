@@ -1,4 +1,6 @@
 export class GoogleButton2Page {
+  private apiUrl = 'https://script.google.com/a/macros/beau.camp/s/AKfycbwDTeI_QX3xz2z_IR4hVeapEA0xm9JXCeksLHIt-vaa333mXJfnciA8eTIz2XXqpdxx/exec?sheet=getranke';
+
   private drinks = [
     { name: 'Wasser', beschreibung: 'Gerolsteiner', preis: 2.50, alkohol: false },
     { name: 'Bier', beschreibung: 'Früh-Kölsch', preis: 2.20, alkohol: true },
@@ -60,27 +62,26 @@ export class GoogleButton2Page {
     wrapper.appendChild(title);
     wrapper.appendChild(cardsContainer);
 
-    // Load drinks from localStorage or use default
-    this.loadDrinksFromStorage();
-    this.renderCards(cardsContainer, this.drinks);
+    // Load data from API
+    this.loadData(cardsContainer);
 
     return wrapper;
   }
 
-  private loadDrinksFromStorage(): void {
-    const stored = localStorage.getItem('getranke_drinks');
-    if (stored) {
-      try {
-        this.drinks = JSON.parse(stored);
-        console.log('Getränke aus localStorage geladen:', this.drinks);
-      } catch (e) {
-        console.warn('Fehler beim Laden aus localStorage, verwende Standard-Getränke', e);
-      }
-    } else {
-      // Speichere Standard-Getränke beim ersten Besuch
-      localStorage.setItem('getranke_drinks', JSON.stringify(this.drinks));
-      console.log('Getränke in localStorage gespeichert');
-    }
+  private loadData(container: HTMLElement): void {
+    console.log('API URL:', this.apiUrl);
+    fetch(this.apiUrl)
+      .then(response => response.json())
+      .then(data => {
+        console.log('Getränkekarte Data:', data);
+        this.renderCards(container, data);
+      })
+      .catch(error => {
+        console.error('Error loading drinks:', error);
+        // Fallback zu lokalen Daten bei Fehler
+        console.log('Using fallback data');
+        this.renderCards(container, this.drinks);
+      });
   }
 
   private renderCards(container: HTMLElement, data: any[]): void {
