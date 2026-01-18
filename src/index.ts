@@ -16,10 +16,12 @@ import { SupabaseButton5Page } from './pages/supabase/SupabaseButton5';
 import { SupabaseButton6Page } from './pages/supabase/SupabaseButton6';
 import { SupabaseButton7Page } from './pages/supabase/SupabaseButton7';
 import { SupabaseButton8Page } from './pages/supabase/SupabaseButton8';
+import { Router, type PageType } from './services/Router';
 
 class App {
   private appElement: HTMLElement;
-  private currentPage: 'home' | 'google' | 'google-button' | 'supabase' | 'supabase-button' = 'home';
+  private router: Router;
+  private currentPage: PageType = 'home';
   private currentButtonPage?: number;
   private currentButtonType: 'google' | 'supabase' = 'google';
 
@@ -29,10 +31,43 @@ class App {
       throw new Error('App element not found');
     }
     this.appElement = app;
+
+    // Initialize router
+    this.router = new Router({
+      onNavigate: (page: PageType, params?: { buttonNumber?: number; buttonType?: 'google' | 'supabase' }) => {
+        this.handleNavigation(page, params);
+      },
+    });
   }
 
   init(): void {
-    this.renderHome();
+    // Router will handle initial route
+  }
+
+  private handleNavigation(page: PageType, params?: { buttonNumber?: number; buttonType?: 'google' | 'supabase' }): void {
+    this.currentPage = page;
+
+    switch (page) {
+      case 'home':
+        this.renderHome();
+        break;
+      case 'google':
+        this.renderGoogle();
+        break;
+      case 'google-button':
+        if (params?.buttonNumber) {
+          this.renderGoogleButton(params.buttonNumber);
+        }
+        break;
+      case 'supabase':
+        this.renderSupabase();
+        break;
+      case 'supabase-button':
+        if (params?.buttonNumber) {
+          this.renderSupabaseButton(params.buttonNumber);
+        }
+        break;
+    }
   }
 
   private renderHome(): void {
@@ -65,14 +100,14 @@ class App {
     const googleButton = document.createElement('button');
     googleButton.textContent = 'Google';
     googleButton.id = 'btn-1';
-    googleButton.addEventListener('click', () => this.goToGoogle());
+    googleButton.addEventListener('click', () => this.router.navigate('/google'));
     container.appendChild(googleButton);
 
     // Second button: Supabase
     const supabaseButton = document.createElement('button');
     supabaseButton.textContent = 'Supabase';
     supabaseButton.id = 'btn-2';
-    supabaseButton.addEventListener('click', () => this.goToSupabase());
+    supabaseButton.addEventListener('click', () => this.router.navigate('/supabase'));
     container.appendChild(supabaseButton);
 
     // Buttons 3-8: nicht zugewiesen
@@ -93,25 +128,22 @@ class App {
     this.currentPage = 'google';
 
     const googlePage = new GooglePage();
-    googlePage.onButtonClick = (buttonNumber: number) => this.goToGoogleButton(buttonNumber);
+    googlePage.onButtonClick = (buttonNumber: number) => this.router.navigate(`/google/button/${buttonNumber}`);
     const pageElement = googlePage.render();
     this.appElement.appendChild(pageElement);
 
     // Back button listener
     const backButton = document.getElementById('google-btn-back');
     if (backButton) {
-      backButton.addEventListener('click', () => this.renderHome());
+      backButton.addEventListener('click', () => this.router.navigate('/'));
     }
   }
 
-  private goToGoogle(): void {
-    this.renderGoogle();
-  }
-
-  private goToGoogleButton(buttonNumber: number): void {
+  private renderGoogleButton(buttonNumber: number): void {
     this.appElement.innerHTML = '';
     this.currentPage = 'google-button';
     this.currentButtonPage = buttonNumber;
+    this.currentButtonType = 'google';
 
     const pageClasses = [
       GoogleButton1Page,
@@ -132,7 +164,7 @@ class App {
     // Back button listener
     const backButton = document.getElementById(`google-btn-${buttonNumber}-back`);
     if (backButton) {
-      backButton.addEventListener('click', () => this.renderGoogle());
+      backButton.addEventListener('click', () => this.router.navigate('/google'));
     }
   }
 
@@ -141,25 +173,22 @@ class App {
     this.currentPage = 'supabase';
 
     const supabasePage = new SupabasePage();
-    supabasePage.onButtonClick = (buttonNumber: number) => this.goToSupabaseButton(buttonNumber);
+    supabasePage.onButtonClick = (buttonNumber: number) => this.router.navigate(`/supabase/button/${buttonNumber}`);
     const pageElement = supabasePage.render();
     this.appElement.appendChild(pageElement);
 
     // Back button listener
     const backButton = document.getElementById('supabase-btn-back');
     if (backButton) {
-      backButton.addEventListener('click', () => this.renderHome());
+      backButton.addEventListener('click', () => this.router.navigate('/'));
     }
   }
 
-  private goToSupabase(): void {
-    this.renderSupabase();
-  }
-
-  private goToSupabaseButton(buttonNumber: number): void {
+  private renderSupabaseButton(buttonNumber: number): void {
     this.appElement.innerHTML = '';
     this.currentPage = 'supabase-button';
     this.currentButtonPage = buttonNumber;
+    this.currentButtonType = 'supabase';
 
     const pageClasses = [
       SupabaseButton1Page,
@@ -180,7 +209,7 @@ class App {
     // Back button listener
     const backButton = document.getElementById(`supabase-btn-${buttonNumber}-back`);
     if (backButton) {
-      backButton.addEventListener('click', () => this.renderSupabase());
+      backButton.addEventListener('click', () => this.router.navigate('/supabase'));
     }
   }
 }
