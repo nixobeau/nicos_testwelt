@@ -107,6 +107,7 @@ class App {
     const supabaseButton = document.createElement('button');
     supabaseButton.textContent = 'Supabase';
     supabaseButton.id = 'btn-2';
+    supabaseButton.style.backgroundColor = '#ef4444';
     supabaseButton.addEventListener('click', () => this.router.navigate('/supabase'));
     container.appendChild(supabaseButton);
 

@@ -48,6 +48,9 @@ export class SupabasePage {
       const button = document.createElement('button');
       button.textContent = `Supabase Button ${i}`;
       button.id = `supabase-btn-${i}`;
+      if (i === 1) {
+        button.style.backgroundColor = '#ef4444';
+      }
       button.addEventListener('click', () => {
         if (this.onButtonClick) {
           this.onButtonClick(i);
