@@ -1,12 +1,19 @@
 import { CodeService } from '../../services/CodeService';
+import golfImage from './golf23_1600x1066.jpg';
 
 export class GolfPostButton1Page {
   render(): HTMLElement {
     const wrapper = document.createElement('div');
     wrapper.style.cssText = `
-      position: relative;
-      min-height: 100vh;
-      background: linear-gradient(135deg, #2d5016 0%, #1a3409 100%);
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: url('${golfImage}');
+      background-size: cover;
+      background-position: center;
+      background-attachment: fixed;
       display: flex;
       flex-direction: column;
       align-items: center;
