@@ -16,6 +16,15 @@ import { SupabaseButton5Page } from './pages/supabase/SupabaseButton5';
 import { SupabaseButton6Page } from './pages/supabase/SupabaseButton6';
 import { SupabaseButton7Page } from './pages/supabase/SupabaseButton7';
 import { SupabaseButton8Page } from './pages/supabase/SupabaseButton8';
+import { GolfPostPage } from './pages/GolfPost';
+import { GolfPostButton1Page } from './pages/golfpost/GolfPostButton1';
+import { GolfPostButton2Page } from './pages/golfpost/GolfPostButton2';
+import { GolfPostButton3Page } from './pages/golfpost/GolfPostButton3';
+import { GolfPostButton4Page } from './pages/golfpost/GolfPostButton4';
+import { GolfPostButton5Page } from './pages/golfpost/GolfPostButton5';
+import { GolfPostButton6Page } from './pages/golfpost/GolfPostButton6';
+import { GolfPostButton7Page } from './pages/golfpost/GolfPostButton7';
+import { GolfPostButton8Page } from './pages/golfpost/GolfPostButton8';
 import { Router, type PageType } from './services/Router';
 
 class App {
@@ -23,7 +32,7 @@ class App {
   private router: Router;
   private currentPage: PageType = 'home';
   private currentButtonPage?: number;
-  private currentButtonType: 'google' | 'supabase' = 'google';
+  private currentButtonType: 'google' | 'supabase' | 'golfpost' = 'google';
 
   constructor() {
     const app = document.getElementById('app');
@@ -44,7 +53,7 @@ class App {
     // Router will handle initial route
   }
 
-  private handleNavigation(page: PageType, params?: { buttonNumber?: number; buttonType?: 'google' | 'supabase' }): void {
+  private handleNavigation(page: PageType, params?: { buttonNumber?: number; buttonType?: 'google' | 'supabase' | 'golfpost' }): void {
     this.currentPage = page;
 
     switch (page) {
@@ -65,6 +74,14 @@ class App {
       case 'supabase-button':
         if (params?.buttonNumber) {
           this.renderSupabaseButton(params.buttonNumber);
+        }
+        break;
+      case 'golfpost':
+        this.renderGolfPost();
+        break;
+      case 'golfpost-button':
+        if (params?.buttonNumber) {
+          this.renderGolfPostButton(params.buttonNumber);
         }
         break;
     }
@@ -111,8 +128,15 @@ class App {
     supabaseButton.addEventListener('click', () => this.router.navigate('/supabase'));
     container.appendChild(supabaseButton);
 
-    // Buttons 3-8: nicht zugewiesen
-    for (let i = 3; i <= 8; i++) {
+    // Third button: Golf Post
+    const golfpostButton = document.createElement('button');
+    golfpostButton.textContent = 'Golf Post';
+    golfpostButton.id = 'btn-3';
+    golfpostButton.addEventListener('click', () => this.router.navigate('/golfpost'));
+    container.appendChild(golfpostButton);
+
+    // Buttons 4-8: nicht zugewiesen
+    for (let i = 4; i <= 8; i++) {
       const button = document.createElement('button');
       button.textContent = 'nicht zugewiesen';
       button.id = `btn-${i}`;
@@ -211,6 +235,51 @@ class App {
     const backButton = document.getElementById(`supabase-btn-${buttonNumber}-back`);
     if (backButton) {
       backButton.addEventListener('click', () => this.router.navigate('/supabase'));
+    }
+  }
+
+  private renderGolfPost(): void {
+    this.appElement.innerHTML = '';
+    this.currentPage = 'golfpost';
+
+    const golfpostPage = new GolfPostPage();
+    golfpostPage.onButtonClick = (buttonNumber: number) => this.router.navigate(`/golfpost/button/${buttonNumber}`);
+    const pageElement = golfpostPage.render();
+    this.appElement.appendChild(pageElement);
+
+    // Back button listener
+    const backButton = document.getElementById('golfpost-btn-back');
+    if (backButton) {
+      backButton.addEventListener('click', () => this.router.navigate('/'));
+    }
+  }
+
+  private renderGolfPostButton(buttonNumber: number): void {
+    this.appElement.innerHTML = '';
+    this.currentPage = 'golfpost-button';
+    this.currentButtonPage = buttonNumber;
+    this.currentButtonType = 'golfpost';
+
+    const pageClasses = [
+      GolfPostButton1Page,
+      GolfPostButton2Page,
+      GolfPostButton3Page,
+      GolfPostButton4Page,
+      GolfPostButton5Page,
+      GolfPostButton6Page,
+      GolfPostButton7Page,
+      GolfPostButton8Page,
+    ];
+
+    const PageClass = pageClasses[buttonNumber - 1];
+    const page = new PageClass();
+    const pageElement = page.render();
+    this.appElement.appendChild(pageElement);
+
+    // Back button listener
+    const backButton = document.getElementById(`golfpost-btn-${buttonNumber}-back`);
+    if (backButton) {
+      backButton.addEventListener('click', () => this.router.navigate('/golfpost'));
     }
   }
 }

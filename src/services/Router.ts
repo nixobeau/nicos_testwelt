@@ -1,4 +1,4 @@
-export type PageType = 'home' | 'google' | 'google-button' | 'supabase' | 'supabase-button';
+export type PageType = 'home' | 'google' | 'google-button' | 'supabase' | 'supabase-button' | 'golfpost' | 'golfpost-button';
 
 export interface RouterConfig {
   onNavigate: (page: PageType, params?: { buttonNumber?: number; buttonType?: 'google' | 'supabase' }) => void;
@@ -72,6 +72,17 @@ export class Router {
       const buttonNumber = parseInt(path.split('/').pop() || '0', 10);
       if (buttonNumber >= 1 && buttonNumber <= 8) {
         return { page: 'supabase-button', params: { buttonNumber, buttonType: 'supabase' } };
+      }
+    }
+
+    if (path === '/golfpost') {
+      return { page: 'golfpost' };
+    }
+
+    if (path.startsWith('/golfpost/button/')) {
+      const buttonNumber = parseInt(path.split('/').pop() || '0', 10);
+      if (buttonNumber >= 1 && buttonNumber <= 8) {
+        return { page: 'golfpost-button', params: { buttonNumber, buttonType: 'golfpost' } };
       }
     }
 
