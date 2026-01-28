@@ -226,7 +226,7 @@ export class GolfPostButton1Page {
     try {
       const ipAddress = await CodeService.getClientIpAddress();
 
-      const result = await CodeService.getCodeForIp(ipAddress, 'golf_codes');
+      const result = await CodeService.getCodeForIp(ipAddress, 'calendar_codes');
 
       if (result) {
         codeText.textContent = result.code;
