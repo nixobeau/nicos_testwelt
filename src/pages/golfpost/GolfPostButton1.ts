@@ -4,15 +4,28 @@ export class GolfPostButton1Page {
   render(): HTMLElement {
     const wrapper = document.createElement('div');
     wrapper.style.cssText = `
+      position: relative;
+      min-height: 100vh;
+      background: linear-gradient(135deg, #2d5016 0%, #1a3409 100%);
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      min-height: 100vh;
       padding: 20px;
-      position: relative;
-      background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+      overflow: hidden;
     `;
+
+    // Background image effect
+    const bgOverlay = document.createElement('div');
+    bgOverlay.style.cssText = `
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(circle at 20% 50%, rgba(74, 222, 128, 0.1) 0%, transparent 50%),
+                  radial-gradient(circle at 80% 80%, rgba(34, 197, 94, 0.05) 0%, transparent 50%);
+      pointer-events: none;
+      z-index: 0;
+    `;
+    wrapper.appendChild(bgOverlay);
 
     const backButton = document.createElement('button');
     backButton.textContent = '← Zurück';
@@ -23,45 +36,53 @@ export class GolfPostButton1Page {
       left: 20px;
       padding: 0.75rem 1.5rem;
       font-size: 1rem;
-      background-color: rgba(255, 255, 255, 0.2);
+      background-color: rgba(255, 255, 255, 0.15);
       color: white;
-      border: 2px solid white;
+      border: 2px solid rgba(255, 255, 255, 0.3);
       border-radius: 8px;
       cursor: pointer;
-      backdrop-filter: blur(10px);
       transition: all 0.3s ease;
       font-weight: 500;
+      z-index: 10;
     `;
+    backButton.onmouseover = () => {
+      backButton.style.backgroundColor = 'rgba(255, 255, 255, 0.25)';
+      backButton.style.borderColor = 'rgba(255, 255, 255, 0.5)';
+    };
+    backButton.onmouseout = () => {
+      backButton.style.backgroundColor = 'rgba(255, 255, 255, 0.15)';
+      backButton.style.borderColor = 'rgba(255, 255, 255, 0.3)';
+    };
 
-    backButton.addEventListener('mouseover', () => {
-      backButton.style.backgroundColor = 'rgba(255, 255, 255, 0.3)';
-    });
-    backButton.addEventListener('mouseout', () => {
-      backButton.style.backgroundColor = 'rgba(255, 255, 255, 0.2)';
-    });
-
-    // Code Card Container
-    const codeCard = document.createElement('div');
-    codeCard.style.cssText = `
-      background: white;
-      border-radius: 12px;
-      box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.3);
-      padding: 2rem;
-      max-width: 28rem;
+    const contentWrapper = document.createElement('div');
+    contentWrapper.style.cssText = `
+      position: relative;
+      z-index: 5;
+      text-align: center;
+      max-width: 500px;
       width: 100%;
     `;
 
     const title = document.createElement('h2');
     title.textContent = 'Hier ist dein Code';
     title.style.cssText = `
-      font-size: 1.5rem;
+      font-size: 2rem;
       font-weight: bold;
-      color: #111827;
+      color: #1f2937;
       margin-bottom: 1.5rem;
-      text-align: center;
+      margin-top: 0;
     `;
 
-    // Code Container with loading/display/error states
+    // Code Card
+    const codeCard = document.createElement('div');
+    codeCard.style.cssText = `
+      background: white;
+      border-radius: 0.5rem;
+      box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+      padding: 2rem;
+      margin-bottom: 2rem;
+    `;
+
     const codeContainer = document.createElement('div');
     codeContainer.id = 'code-container';
     codeContainer.style.cssText = `
@@ -84,15 +105,23 @@ export class GolfPostButton1Page {
       border: 4px solid #e5e7eb;
       border-top-color: #2563eb;
       border-radius: 50%;
-      animation: spin 0.8s linear infinite;
+      animation: spin 1s linear infinite;
+      margin-bottom: 0.5rem;
     `;
+
+    const style = document.createElement('style');
+    style.textContent = `
+      @keyframes spin {
+        to { transform: rotate(360deg); }
+      }
+    `;
+    document.head.appendChild(style);
 
     const loadingText = document.createElement('p');
     loadingText.textContent = 'Code wird geladen...';
     loadingText.style.cssText = `
       color: #4b5563;
-      margin-top: 0.5rem;
-      font-size: 0.875rem;
+      margin: 0.5rem 0 0 0;
     `;
 
     codeLoading.appendChild(spinner);
@@ -102,8 +131,8 @@ export class GolfPostButton1Page {
     const codeDisplay = document.createElement('div');
     codeDisplay.id = 'code-display';
     codeDisplay.style.cssText = `
-      text-align: center;
       display: none;
+      text-align: center;
     `;
 
     const codeLabel = document.createElement('p');
@@ -111,14 +140,14 @@ export class GolfPostButton1Page {
     codeLabel.style.cssText = `
       font-size: 0.875rem;
       color: #4b5563;
-      margin-bottom: 0.5rem;
+      margin: 0 0 0.5rem 0;
     `;
 
     const codeBox = document.createElement('div');
     codeBox.style.cssText = `
       background: #eff6ff;
       border: 2px solid #2563eb;
-      border-radius: 8px;
+      border-radius: 0.5rem;
       padding: 1rem;
       margin-bottom: 1rem;
     `;
@@ -127,11 +156,11 @@ export class GolfPostButton1Page {
     codeText.id = 'code-text';
     codeText.style.cssText = `
       font-size: 2rem;
-      font-family: 'Courier New', monospace;
       font-weight: bold;
       color: #2563eb;
+      font-family: 'Courier New', monospace;
       margin: 0;
-      letter-spacing: 0.2em;
+      letter-spacing: 2px;
     `;
 
     codeBox.appendChild(codeText);
@@ -140,22 +169,21 @@ export class GolfPostButton1Page {
     copyBtn.id = 'copy-btn';
     copyBtn.textContent = 'Code kopieren';
     copyBtn.style.cssText = `
-      padding: 0.75rem 1.5rem;
+      padding: 0.5rem 1.5rem;
       background-color: #2563eb;
       color: white;
       border: none;
-      border-radius: 8px;
+      border-radius: 0.5rem;
       cursor: pointer;
       font-weight: 500;
-      transition: background-color 0.3s ease;
+      transition: all 0.3s ease;
     `;
-
-    copyBtn.addEventListener('mouseover', () => {
+    copyBtn.onmouseover = () => {
       copyBtn.style.backgroundColor = '#1d4ed8';
-    });
-    copyBtn.addEventListener('mouseout', () => {
+    };
+    copyBtn.onmouseout = () => {
       copyBtn.style.backgroundColor = '#2563eb';
-    });
+    };
 
     codeDisplay.appendChild(codeLabel);
     codeDisplay.appendChild(codeBox);
@@ -165,13 +193,11 @@ export class GolfPostButton1Page {
     const codeError = document.createElement('div');
     codeError.id = 'code-error';
     codeError.style.cssText = `
+      display: none;
       text-align: center;
       color: #dc2626;
-      display: none;
     `;
-    const errorText = document.createElement('p');
-    errorText.textContent = 'Es ist ein Fehler aufgetreten. Bitte versuche es später erneut.';
-    codeError.appendChild(errorText);
+    codeError.textContent = 'Es ist ein Fehler aufgetreten. Bitte versuche es später erneut.';
 
     codeContainer.appendChild(codeLoading);
     codeContainer.appendChild(codeDisplay);
@@ -180,66 +206,53 @@ export class GolfPostButton1Page {
     codeCard.appendChild(title);
     codeCard.appendChild(codeContainer);
 
+    contentWrapper.appendChild(codeCard);
     wrapper.appendChild(backButton);
-    wrapper.appendChild(codeCard);
+    wrapper.appendChild(contentWrapper);
 
-    // Add spin animation
-    const style = document.createElement('style');
-    style.textContent = `
-      @keyframes spin {
-        to { transform: rotate(360deg); }
-      }
-    `;
-    document.head.appendChild(style);
-
-    // Fetch code when page loads
-    this.fetchCode();
+    // Load IP and get code
+    this.loadCodeForUser(codeText, codeLoading, codeDisplay, codeError, copyBtn);
 
     return wrapper;
   }
 
-  private async fetchCode(): Promise<void> {
-    const codeLoading = document.getElementById('code-loading');
-    const codeDisplay = document.getElementById('code-display');
-    const codeError = document.getElementById('code-error');
-    const codeText = document.getElementById('code-text');
-    const copyBtn = document.getElementById('copy-btn');
-
+  private async loadCodeForUser(
+    codeText: HTMLElement,
+    codeLoading: HTMLElement,
+    codeDisplay: HTMLElement,
+    codeError: HTMLElement,
+    copyBtn: HTMLButtonElement
+  ): Promise<void> {
     try {
       const ipAddress = await CodeService.getClientIpAddress();
-      const result = await CodeService.getGolfCodeForIp(ipAddress);
 
-      if (result && result.code) {
-        codeLoading!.style.display = 'none';
-        codeText!.textContent = result.code;
-        codeDisplay!.style.display = 'block';
+      const result = await CodeService.getCodeForIp(ipAddress, 'golf_codes');
 
-        // Copy button functionality
-        copyBtn!.addEventListener('click', () => {
+      if (result) {
+        codeText.textContent = result.code;
+        
+        // Hide loading, show code display
+        codeLoading.style.display = 'none';
+        codeDisplay.style.display = 'block';
+
+        // Setup copy button
+        copyBtn.addEventListener('click', () => {
           navigator.clipboard.writeText(result.code).then(() => {
-            const originalText = copyBtn!.textContent;
-            copyBtn!.textContent = 'Kopiert! ✓';
+            const originalText = copyBtn.textContent;
+            copyBtn.textContent = 'Kopiert! ✓';
             setTimeout(() => {
-              copyBtn!.textContent = originalText;
+              copyBtn.textContent = originalText;
             }, 2000);
           });
         });
       } else {
-        this.showError();
+        codeLoading.style.display = 'none';
+        codeError.style.display = 'block';
       }
     } catch (error) {
-      console.error('Error:', error);
-      this.showError();
+      console.error('Error loading code:', error);
+      codeLoading.style.display = 'none';
+      codeError.style.display = 'block';
     }
-  }
-
-  private showError(): void {
-    const codeLoading = document.getElementById('code-loading');
-    const codeDisplay = document.getElementById('code-display');
-    const codeError = document.getElementById('code-error');
-
-    codeLoading!.style.display = 'none';
-    codeDisplay!.style.display = 'none';
-    codeError!.style.display = 'block';
   }
 }

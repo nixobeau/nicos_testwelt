@@ -4,9 +4,7 @@ import { supabaseConfig } from '../config/supabaseConfig';
 export class CodeService {
   private static supabase: SupabaseClient;
   private static readonly TABLE_NAME = 'code_assignments';
-  private static readonly GOLF_TABLE_NAME = 'golf_codes';
   private static availableCodeCount: number = 0;
-  private static availableGolfCodeCount: number = 0;
 
   static {
     // Initialize Supabase client
@@ -25,11 +23,12 @@ export class CodeService {
     }
   }
 
-  static async getCodeForIp(ipAddress: string): Promise<{ code: string; isNew: boolean } | null> {
+  static async getCodeForIp(ipAddress: string, tableName?: string): Promise<{ code: string; isNew: boolean } | null> {
     try {
+      const table = tableName || CodeService.TABLE_NAME;
       // Check if IP already has a code
       const { data: existingAssignment, error: selectError } = await CodeService.supabase
-        .from(CodeService.TABLE_NAME)
+        .from(table)
         .select('code')
         .eq('ip_address', ipAddress)
         .single();
@@ -40,7 +39,7 @@ export class CodeService {
 
       // Get next available code
       const { data: availableCode, error: fetchError } = await CodeService.supabase
-        .from(CodeService.TABLE_NAME)
+        .from(table)
         .select('code')
         .is('ip_address', null)
         .limit(1)
@@ -53,7 +52,7 @@ export class CodeService {
 
       // Assign code to IP
       const { error: updateError } = await CodeService.supabase
-        .from(CodeService.TABLE_NAME)
+        .from(table)
         .update({ ip_address: ipAddress, assigned_at: new Date().toISOString() })
         .eq('code', availableCode.code);
 
@@ -62,8 +61,6 @@ export class CodeService {
         return null;
       }
 
-      await CodeService.updateAvailableCount();
-
       return { code: availableCode.code, isNew: true };
     } catch (error) {
       console.error('Error in getCodeForIp:', error);
@@ -71,10 +68,11 @@ export class CodeService {
     }
   }
 
-  static async getAvailableCodeCount(): Promise<number> {
+  static async getAvailableCodeCount(tableName?: string): Promise<number> {
     try {
+      const table = tableName || CodeService.TABLE_NAME;
       const { count, error } = await CodeService.supabase
-        .from(CodeService.TABLE_NAME)
+        .from(table)
         .select('*', { count: 'exact', head: true })
         .is('ip_address', null);
 
@@ -96,79 +94,5 @@ export class CodeService {
 
   static getCachedAvailableCount(): number {
     return CodeService.availableCodeCount;
-  }
-
-  // Golf Code methods
-  static async getGolfCodeForIp(ipAddress: string): Promise<{ code: string; isNew: boolean } | null> {
-    try {
-      // Check if IP already has a golf code
-      const { data: existingAssignment, error: selectError } = await CodeService.supabase
-        .from(CodeService.GOLF_TABLE_NAME)
-        .select('code')
-        .eq('ip_address', ipAddress)
-        .single();
-
-      if (existingAssignment) {
-        return { code: existingAssignment.code, isNew: false };
-      }
-
-      // Get next available golf code
-      const { data: availableCode, error: fetchError } = await CodeService.supabase
-        .from(CodeService.GOLF_TABLE_NAME)
-        .select('code')
-        .is('ip_address', null)
-        .limit(1)
-        .single();
-
-      if (!availableCode) {
-        console.error('No available golf codes');
-        return null;
-      }
-
-      // Assign code to IP
-      const { error: updateError } = await CodeService.supabase
-        .from(CodeService.GOLF_TABLE_NAME)
-        .update({ ip_address: ipAddress, assigned_at: new Date().toISOString() })
-        .eq('code', availableCode.code);
-
-      if (updateError) {
-        console.error('Error assigning golf code:', updateError);
-        return null;
-      }
-
-      await CodeService.updateAvailableGolfCount();
-
-      return { code: availableCode.code, isNew: true };
-    } catch (error) {
-      console.error('Error in getGolfCodeForIp:', error);
-      return null;
-    }
-  }
-
-  static async getAvailableGolfCodeCount(): Promise<number> {
-    try {
-      const { count, error } = await CodeService.supabase
-        .from(CodeService.GOLF_TABLE_NAME)
-        .select('*', { count: 'exact', head: true })
-        .is('ip_address', null);
-
-      if (error) {
-        console.error('Error counting available golf codes:', error);
-        return 0;
-      }
-
-      return count || 0;
-    } catch (error) {
-      console.error('Error in getAvailableGolfCodeCount:', error);
-      return 0;
-    }
-  }
-
-  private static async updateAvailableGolfCount(): Promise<void> {
-    CodeService.availableGolfCodeCount = await CodeService.getAvailableGolfCodeCount();
-  }
-
-  static getCachedAvailableGolfCount(): number {
-    return CodeService.availableGolfCodeCount;
   }
 }
