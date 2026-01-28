@@ -15,18 +15,6 @@ export class GolfPostButton1Page {
       overflow: hidden;
     `;
 
-    // Background image effect
-    const bgOverlay = document.createElement('div');
-    bgOverlay.style.cssText = `
-      position: absolute;
-      inset: 0;
-      background: radial-gradient(circle at 20% 50%, rgba(74, 222, 128, 0.1) 0%, transparent 50%),
-                  radial-gradient(circle at 80% 80%, rgba(34, 197, 94, 0.05) 0%, transparent 50%);
-      pointer-events: none;
-      z-index: 0;
-    `;
-    wrapper.appendChild(bgOverlay);
-
     const backButton = document.createElement('button');
     backButton.textContent = '← Zurück';
     backButton.id = 'golfpost-btn-1-back';
@@ -145,8 +133,8 @@ export class GolfPostButton1Page {
 
     const codeBox = document.createElement('div');
     codeBox.style.cssText = `
-      background: #eff6ff;
-      border: 2px solid #2563eb;
+      background: #e8f8f3;
+      border: 2px solid #04ad79;
       border-radius: 0.5rem;
       padding: 1rem;
       margin-bottom: 1rem;
@@ -157,7 +145,7 @@ export class GolfPostButton1Page {
     codeText.style.cssText = `
       font-size: 2rem;
       font-weight: bold;
-      color: #2563eb;
+      color: #04ad79;
       font-family: 'Courier New', monospace;
       margin: 0;
       letter-spacing: 2px;
@@ -170,7 +158,7 @@ export class GolfPostButton1Page {
     copyBtn.textContent = 'Code kopieren';
     copyBtn.style.cssText = `
       padding: 0.5rem 1.5rem;
-      background-color: #2563eb;
+      background-color: #04ad79;
       color: white;
       border: none;
       border-radius: 0.5rem;
@@ -179,10 +167,10 @@ export class GolfPostButton1Page {
       transition: all 0.3s ease;
     `;
     copyBtn.onmouseover = () => {
-      copyBtn.style.backgroundColor = '#1d4ed8';
+      copyBtn.style.backgroundColor = '#038a5f';
     };
     copyBtn.onmouseout = () => {
-      copyBtn.style.backgroundColor = '#2563eb';
+      copyBtn.style.backgroundColor = '#04ad79';
     };
 
     codeDisplay.appendChild(codeLabel);
